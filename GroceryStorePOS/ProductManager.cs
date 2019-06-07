@@ -12,6 +12,11 @@ namespace GroceryStorePOS
             this._storage = new ProductStorage();
         }
 
+        public ProductManager(Dictionary<string, decimal> products)
+        {
+            this._storage = new ProductStorage(products);
+        }
+
         public List<Product> Get(List<string> ids)
         {
             return this._storage.Get(ids);

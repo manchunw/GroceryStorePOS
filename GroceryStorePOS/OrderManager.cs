@@ -14,6 +14,11 @@ namespace GroceryStorePOS
             this._productManager = new ProductManager();
         }
 
+        public OrderManager(Dictionary<string, decimal> products)
+        {
+            this._productManager = new ProductManager(products);
+        }
+
         public decimal GetTotalPrice(Order order)
         {
             return order.Total;
@@ -37,10 +42,12 @@ namespace GroceryStorePOS
         public List<string> PrintProducts(Order order)
         {
             var ret = new List<string>();
-            ret.Add($"{nameof(Product.Name)} {nameof(OrderItem.Quantity)} {nameof(Product.Price)} {nameof(OrderItem.Subtotal)}");
+            ret.Add($"{nameof(Product.Name)},{nameof(OrderItem.Quantity)},{nameof(Product.Price)},{nameof(OrderItem.Subtotal)},Grand Total");
+            decimal grandTotal = 0;
             foreach(var p in order.Items)
             {
-                ret.Add($"{p.Product.Name} {p.Quantity} {p.Product.Price} {p.Subtotal}");
+                grandTotal += p.Subtotal;
+                ret.Add($"{p.Product.Name},{p.Quantity},{p.Product.Price},{p.Subtotal},{grandTotal}");
             }
 
             ret.Add("===================");

@@ -6,34 +6,44 @@ namespace GroceryStorePOS
 {
     public class ConsoleManager
     {
-        private Order _order;
+        private readonly Order _order;
         private readonly OrderManager _orderManager;
         private readonly DiscountManager _discountManager;
+
         public ConsoleManager()
         {
             this._order = new Order();
             this._orderManager = new OrderManager();
             this._discountManager = new DiscountManager();
         }
+
+        public ConsoleManager(Dictionary<string, decimal> products)
+        {
+            this._order = new Order();
+            this._orderManager = new OrderManager(products);
+            this._discountManager = new DiscountManager();
+        }
+
         public void Scan(string input)
         {
             var inputList = input.Split(",");
             for(var i = 0; i < inputList.Length; i++)
             {
-                if (inputList[i] == "Single")
+                switch (inputList[i])
                 {
-                    i = Increment(inputList, i);
-                    this._orderManager.AddProduct(this._order, inputList[i], 1);
-                } else if (inputList[i] == "Bulk")
-                {
-                    i = Increment(inputList, i);
-                    var productId = inputList[i];
-                    i = Increment(inputList, i);
-                    var productQty = int.Parse(inputList[i]);
-                    this._orderManager.AddProduct(this._order, productId, productQty);
-                } else
-                {
-                    throw new InvalidOperationException();
+                    case "Single":
+                        i = Increment(inputList, i);
+                        this._orderManager.AddProduct(this._order, inputList[i], 1);
+                        break;
+                    case "Bulk":
+                        i = Increment(inputList, i);
+                        var productId = inputList[i];
+                        i = Increment(inputList, i);
+                        var productQty = int.Parse(inputList[i]);
+                        this._orderManager.AddProduct(this._order, productId, productQty);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unexpected command at index {i}: {inputList[i]}");
                 }
             }
         }
