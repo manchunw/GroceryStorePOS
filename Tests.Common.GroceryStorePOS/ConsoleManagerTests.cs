@@ -42,7 +42,7 @@ namespace Tests.Common.GroceryStorePOS
             sut.Scan("Single,Apple");
             sut.Cancel("Apple");
             var order = sut.GetOrder();
-            Assert.Equal(0, order.Products.Count);
+            Assert.Empty(order.Products);
         }
 
         [Fact]
