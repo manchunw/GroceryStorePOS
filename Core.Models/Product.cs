@@ -7,8 +7,23 @@ namespace Core.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
+        private decimal PriceRaw { get; set; }
+        public decimal Price
+        {
+            get
+            {
+                var ret = this.PriceRaw;
+                foreach (var d in Discounts)
+                {
+                    if (d is PercentageDiscount pctDiscount)
+                    {
+                        ret = ret * (1 - pctDiscount.OffPct);
+                    }
+                }
+                return ret;
+            }
+            set { this.PriceRaw = value; }
+        }
         public List<Discount> Discounts { get; set; } = new List<Discount>();
     }
 }

@@ -7,12 +7,12 @@ namespace GroceryStorePOS
     {
         public void DiscountByPercentage(Product product, decimal offPct)
         {
-            throw new NotImplementedException();
+            product.Discounts.Add(new PercentageDiscount { OffPct = offPct });
         }
 
-        public void DiscountByQuantity(Product product, int BuyQty, int GetFreeQty)
+        public void DiscountByQuantity(Product product, int buyQty, int getFreeQty)
         {
-            throw new NotImplementedException();
+            product.Discounts.Add(new QuantityDiscount { BuyQty = buyQty, GetFreeQty = getFreeQty });
         }
     }
 }

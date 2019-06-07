@@ -7,7 +7,12 @@ namespace GroceryStorePOS
     {
         public Product GetProduct(string name, decimal price)
         {
-            return new Product();
+            return new Product
+            {
+                Id = name,
+                Name = name,
+                Price = price
+            };
         }
     }
 }

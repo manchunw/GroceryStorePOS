@@ -5,19 +5,26 @@ namespace GroceryStorePOS
 {
     public class ProductManager
     {
-        public List<Product> Get(string ids)
+        private readonly ProductStorage _storage;
+
+        public ProductManager()
         {
-            throw new NotImplementedException();
+            this._storage = new ProductStorage();
         }
 
-        public void SetDiscount(string id, Discount discount)
+        public List<Product> Get(List<string> ids)
         {
-            throw new NotImplementedException();
+            return this._storage.Get(ids);
         }
 
-        public void Print(string id)
+        public void SetDiscount(Product product, Discount discount)
         {
-            throw new NotImplementedException();
+            product.Discounts = new List<Discount> { discount };
+        }
+
+        public void Process(Product product)
+        {
+            this._storage.Process(product);
         }
     }
 }
