@@ -1,68 +1,76 @@
 using System;
+using AutoFixture;
 using Core.Models.Exception;
 using GroceryStorePOS;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoMoq;
 using Xunit;
 
 namespace Tests.Common.GroceryStorePOS
 {
     public class ConsoleManagerTests
     {
+        private readonly IFixture _fixture;
+        public ConsoleManagerTests()
+        {
+            this._fixture = new Fixture();
+        }
+
         [Fact]
         public void ScanProductsSuccess()
         {
-            var sut = new ConsoleManager();
+            var sut = this._fixture.Create<ConsoleManager>();
             sut.Scan("Single,Apple,Bulk,Milk,2");
             var order = sut.GetOrder();
-            Assert.Equal(3, order.Products.Count);
-            Assert.Equal("Apple", order.Products[0].Id);
-            Assert.Equal("Milk", order.Products[1].Id);
-            Assert.Equal("Milk", order.Products[2].Id);
+            Assert.Equal(2, order.Items.Count);
+            Assert.Equal("Apple", order.Items[0].Product.Id);
+            Assert.Equal(1, order.Items[0].Quantity);
+            Assert.Equal("Milk", order.Items[1].Product.Id);
+            Assert.Equal(2, order.Items[1].Quantity);
         }
 
         [Fact]
         public void ScanProductsInvalidScanTypeFailure()
         {
-            var sut = new ConsoleManager();
-            sut.Scan("Invalid");
-            Assert.Throws<InvalidOperationException>(() => true);
+            var sut = this._fixture.Create<ConsoleManager>();
+            Assert.Throws<InvalidOperationException>(() => sut.Scan("Invalid"));
         }
 
         [Fact]
         public void ScanProductsInvalidProductFailure()
         {
-            var sut = new ConsoleManager();
-            sut.Scan("Single,Orange,1");
-            Assert.Throws<ProductNotFoundException>(() => true);
+            var sut = this._fixture.Create<ConsoleManager>();
+            Assert.Throws<ProductNotFoundException>(() => sut.Scan("Single,Orange"));
         }
 
         [Fact]
         public void CancelProductSuccess()
         {
-            var sut = new ConsoleManager();
+            var sut = this._fixture.Create<ConsoleManager>();
             sut.Scan("Single,Apple");
-            sut.Cancel("Apple");
             var order = sut.GetOrder();
-            Assert.Empty(order.Products);
+            Assert.Equal("Apple", order.Items[0].Product.Id);
+            sut.Cancel("Apple");
+            order = sut.GetOrder();
+            Assert.Empty(order.Items);
         }
 
         [Fact]
         public void CancelProductInvalidProductFailure()
         {
-            var sut = new ConsoleManager();
+            var sut = this._fixture.Create<ConsoleManager>();
             sut.Scan("Single,Apple");
-            sut.Cancel("Orange");
-            var order = sut.GetOrder();
-            Assert.Throws<ProductNotFoundException>(() => true);
+            Assert.Throws<ProductNotFoundException>(() => sut.Cancel("Orange"));
         }
 
         [Fact]
         public void PrintSuccess()
         {
-            var sut = new ConsoleManager();
+            var sut = this._fixture.Create<ConsoleManager>();
             sut.Scan("Single,Apple,Bulk,Milk,2");
             var ret = sut.Print();
             Assert.Equal("Name Quantity Price Subtotal", ret[0]);
-            Assert.Equal("Apple 1 4.0 4.0", ret[1]);
+            Assert.Equal("Apple 1 4 4", ret[1]);
             Assert.Equal("Milk 2 9.41 18.82", ret[2]);
             Assert.Equal("===================", ret[3]);
             Assert.Equal("Total 22.82", ret[4]);
@@ -71,25 +79,25 @@ namespace Tests.Common.GroceryStorePOS
         [Fact]
         public void DiscountByPercentageSuccess()
         {
-            var sut = new ConsoleManager();
-            sut.DiscountByPercentage("Apple", 0.05);
+            var sut = this._fixture.Create<ConsoleManager>();
+            sut.DiscountByPercentage("Apple", 0.05m);
             sut.Scan("Single,Apple");
             var order = sut.GetOrder();
-            Assert.Equal("Apple", order.Products[0].Id);
-            Assert.Equal(3.8, order.Products[0].Quantity);
+            Assert.Equal("Apple", order.Items[0].Product.Id);
+            Assert.Equal(3.8m, order.Items[0].Product.Price);
         }
 
         [Fact]
         public void DiscountByQuantitySuccess()
         {
-            var sut = new ConsoleManager();
+            var sut = this._fixture.Create<ConsoleManager>();
             sut.DiscountByQuantity("Milk", 2, 1);
             sut.Scan("Bulk,Milk,3");
             var ret = sut.Print();
             Assert.Equal("Name Quantity Price Subtotal", ret[0]);
             Assert.Equal("Milk 3 9.41 18.82", ret[1]);
-            Assert.Equal("===================", ret[3]);
-            Assert.Equal("Total 18.82", ret[4]);
+            Assert.Equal("===================", ret[2]);
+            Assert.Equal("Total 18.82", ret[3]);
         }
     }
 }
