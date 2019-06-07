@@ -7,7 +7,7 @@ namespace GroceryStorePOS
 {
     public class ProductStorage
     {
-        private List<Product> _products = new List<Product>();
+        private readonly List<Product> _products = new List<Product>();
 
         public ProductStorage()
         {
