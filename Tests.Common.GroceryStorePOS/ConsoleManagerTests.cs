@@ -32,6 +32,22 @@ namespace Tests.Common.GroceryStorePOS
         }
 
         [Fact]
+        public void ScanProductsNegativeQuantityFailure()
+        {
+            var sut = this._fixture.Create<ConsoleManager>();
+
+            Assert.Throws<InvalidQuantityException>(() => sut.Scan("Single,Apple,Bulk,Milk,-1"));
+        }
+
+        [Fact]
+        public void ScanProductsZeroQuantityFailure()
+        {
+            var sut = this._fixture.Create<ConsoleManager>();
+
+            Assert.Throws<InvalidQuantityException>(() => sut.Scan("Single,Apple,Bulk,Milk,0"));
+        }
+
+        [Fact]
         public void ScanProductsInvalidScanTypeFailure()
         {
             var sut = this._fixture.Create<ConsoleManager>();
