@@ -19,16 +19,6 @@ namespace GroceryStorePOS
             _products.Add(factory.GetProduct("Cola Zero (1L)", 11.15m));
         }
 
-        public ProductStorage(Dictionary<string, decimal> data)
-        {
-            this._products = new List<Product>();
-            var factory = new ProductFactory();
-            foreach(var d in data)
-            {
-                _products.Add(factory.GetProduct(d.Key, d.Value));
-            }
-        }
-
         public List<Product> Get(List<string> ids)
         { 
             return this._products.FindAll(p => ids.Count == 0 || ids.Contains(p.Id));

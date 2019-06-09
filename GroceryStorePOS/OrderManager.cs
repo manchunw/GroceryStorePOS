@@ -14,16 +14,6 @@ namespace GroceryStorePOS
             this._productManager = new ProductManager();
         }
 
-        public OrderManager(Dictionary<string, decimal> products)
-        {
-            this._productManager = new ProductManager(products);
-        }
-
-        public decimal GetTotalPrice(Order order)
-        {
-            return order.Total;
-        }
-
         public void CancelProduct(Order order, string id)
         {
             var idx = order.Items.FindIndex((o) => o.Product.Id == id);
