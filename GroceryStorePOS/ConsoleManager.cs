@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.Models;
+using Core.Models.Exception;
 
 namespace GroceryStorePOS
 {
@@ -32,8 +33,18 @@ namespace GroceryStorePOS
                         i = Increment(inputList, i);
                         var productId = inputList[i];
                         i = Increment(inputList, i);
-                        var productQty = int.Parse(inputList[i]);
-                        this._orderManager.AddProduct(this._order, productId, productQty);
+                        if (int.TryParse(inputList[i], out int productQty))
+                        {
+                            if (productQty <= 0)
+                            {
+                                throw new InvalidQuantityException($"Product quantity must be a positive integer: {inputList[i]}");
+                            }
+                            this._orderManager.AddProduct(this._order, productId, productQty);
+                        } else
+                        {
+                            throw new InvalidQuantityException($"Product quantity cannot be parsed as int at index {i}");
+                        }
+
                         break;
                     default:
                         throw new InvalidOperationException($"Unexpected command at index {i}: {inputList[i]}");
@@ -65,6 +76,11 @@ namespace GroceryStorePOS
             var discount = this._discountFactory.GetDiscountByQuantity(buyQty, getFreeQty);
             product.Discounts = new List<Discount> { discount };
             this._orderManager.ProcessProduct(product);
+        }
+
+        public void ClearOrder()
+        {
+            this._order.Items.Clear();
         }
 
         public Order GetOrder()
