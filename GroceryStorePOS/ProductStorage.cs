@@ -27,12 +27,12 @@ namespace GroceryStorePOS
         public void Process(Product product)
         {
             var idx = this._products.FindIndex((p) => p.Id == product.Id);
-            if (idx < 0)
+            if (idx >= 0)
             {
-                throw new ProductNotFoundException();
+                this._products[idx] = product;
             }
 
-            this._products[idx] = product;
+            // TODO: add product if product is not found
         }
     }
 }
