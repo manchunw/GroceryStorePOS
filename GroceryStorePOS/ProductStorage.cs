@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Core.Models;
-using Core.Models.Exception;
 
 namespace GroceryStorePOS
 {
@@ -9,9 +7,8 @@ namespace GroceryStorePOS
     {
         private readonly List<Product> _products = new List<Product>();
 
-        public ProductStorage()
+        public ProductStorage(ProductFactory factory)
         {
-            var factory = new ProductFactory();
             _products.Add(factory.GetProduct("Apple", 4m));
             _products.Add(factory.GetProduct("Milk", 9.41m));
             _products.Add(factory.GetProduct("Eggs (12 pack)", 5.25m));

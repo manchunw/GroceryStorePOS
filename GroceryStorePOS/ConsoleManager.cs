@@ -11,11 +11,11 @@ namespace GroceryStorePOS
         private readonly OrderManager _orderManager;
         private readonly DiscountFactory _discountFactory;
 
-        public ConsoleManager()
+        public ConsoleManager(OrderManager orderManager, DiscountFactory discountFactory)
         {
             this._order = new Order();
-            this._orderManager = new OrderManager();
-            this._discountFactory = new DiscountFactory();
+            this._orderManager = orderManager;
+            this._discountFactory = discountFactory;
         }
 
         public void Scan(string input)

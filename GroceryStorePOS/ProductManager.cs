@@ -7,9 +7,9 @@ namespace GroceryStorePOS
     {
         private readonly ProductStorage _storage;
 
-        public ProductManager()
+        public ProductManager(ProductStorage productStorage)
         {
-            this._storage = new ProductStorage();
+            this._storage = productStorage;
         }
 
         public List<Product> Get(List<string> ids)

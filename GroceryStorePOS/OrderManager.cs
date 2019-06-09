@@ -9,9 +9,10 @@ namespace GroceryStorePOS
     public class OrderManager
     {
         private readonly ProductManager _productManager;
-        public OrderManager()
+
+        public OrderManager(ProductManager productManager)
         {
-            this._productManager = new ProductManager();
+            this._productManager = productManager;
         }
 
         public void CancelProduct(Order order, string id)

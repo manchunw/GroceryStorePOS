@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using Ninject;
 
 namespace GroceryStorePOS
 {
     [ExcludeFromCodeCoverage]
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        private readonly IKernel _kernel = new StandardKernel();
+
+        public void Start()
         {
+            var callingAssembly = Assembly.GetCallingAssembly();
+            this._kernel.Load(callingAssembly);
+            var consoleManager = this._kernel.Get<ConsoleManager>();
+
             Console.WriteLine("Welcome to Grocery Store POS system.");
             char command = ' ';
-            var consoleManager = new ConsoleManager();
             while (command != 'q')
             {
                 Console.WriteLine();
@@ -29,11 +36,11 @@ namespace GroceryStorePOS
                     case 's': // scan product
                         string input = string.Empty;
                         string productId;
-                        char dummy = 's';
-                        while (dummy == 's' || dummy == 'b')
+                        char subcommand = 's';
+                        while (subcommand == 's' || subcommand == 'b')
                         {
-                            dummy = ReadChar("Select a mode to scan a product ([S]ingle / [B]ulk / [F]inish): ");
-                            switch (dummy)
+                            subcommand = ReadChar("Select a mode to scan a product ([S]ingle / [B]ulk / [F]inish): ");
+                            switch (subcommand)
                             {
                                 case 's':
                                     productId = ReadString("Please enter a product ID: ");
@@ -83,6 +90,12 @@ namespace GroceryStorePOS
                         break;
                 }
             }
+        }
+
+        static void Main(string[] args)
+        {
+            var launcher = new Program();
+            launcher.Start();
         }
 
         static private char ReadChar(string msg)
