@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using AutoFixture;
 using Core.Models.Exception;
 using GroceryStorePOS;
+using Moq;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoMoq;
 using Xunit;
@@ -16,6 +17,7 @@ namespace Tests.Common.GroceryStorePOS
         public ConsoleManagerTests()
         {
             this._fixture = new Fixture();
+            this._fixture.Inject(new ProductStorage(this._fixture.Create<ProductFactory>()));
         }
 
         [Fact]
