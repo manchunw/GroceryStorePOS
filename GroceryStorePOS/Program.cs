@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Text;
 using Ninject;
 
 namespace GroceryStorePOS
@@ -34,7 +35,7 @@ namespace GroceryStorePOS
                 switch (command)
                 {
                     case 's': // scan product
-                        string input = string.Empty;
+                        var builder = new StringBuilder();
                         string productId;
                         char subcommand = 's';
                         while (subcommand == 's' || subcommand == 'b')
@@ -44,19 +45,20 @@ namespace GroceryStorePOS
                             {
                                 case 's':
                                     productId = ReadString("Please enter a product ID: ");
-                                    input += $"Single,{productId},";
+                                    builder.Append($"Single,{productId},");
                                     break;
                                 case 'b':
                                     productId = ReadString("Please enter a product ID: ");
                                     var quantity = ReadInt("Please enter quantity to purchase: ");
-                                    input += $"Bulk,{productId},{quantity},";
+                                    builder.Append($"Bulk,{productId},{quantity},");
                                     break;
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(input))
+                        if (builder.Length > 0)
                         {
-                            input = input.Remove(input.Length - 1);
+                            builder = builder.Remove(builder.Length - 1, 1);
+                            var input = builder.ToString();
                             consoleManager.Scan(input);
                         }
 
