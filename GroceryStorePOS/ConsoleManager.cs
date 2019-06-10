@@ -10,12 +10,14 @@ namespace GroceryStorePOS
         private readonly Order _order;
         private readonly OrderManager _orderManager;
         private readonly DiscountFactory _discountFactory;
+        private readonly ProductManager _productManager;
 
-        public ConsoleManager(OrderManager orderManager, DiscountFactory discountFactory)
+        public ConsoleManager(OrderManager orderManager, DiscountFactory discountFactory, ProductManager productManager)
         {
             this._order = new Order();
             this._orderManager = orderManager;
             this._discountFactory = discountFactory;
+            this._productManager = productManager;
         }
 
         public void Scan(string input)
@@ -64,18 +66,18 @@ namespace GroceryStorePOS
 
         public void DiscountByPercentage(string id, decimal offPct)
         {
-            var product = this._orderManager.GetProduct(id);
+            var product = this._productManager.Get(id);
             var discount = this._discountFactory.GetDiscountByPercentage(offPct);
             product.Discounts = new List<Discount> { discount };
-            this._orderManager.ProcessProduct(product);
+            this._productManager.Process(product);
         }
 
         public void DiscountByQuantity(string id, int buyQty, int getFreeQty)
         {
-            var product = this._orderManager.GetProduct(id);
+            var product = this._productManager.Get(id);
             var discount = this._discountFactory.GetDiscountByQuantity(buyQty, getFreeQty);
             product.Discounts = new List<Discount> { discount };
-            this._orderManager.ProcessProduct(product);
+            this._productManager.Process(product);
         }
 
         public void ClearOrder()

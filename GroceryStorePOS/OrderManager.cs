@@ -48,24 +48,8 @@ namespace GroceryStorePOS
 
         public void AddProduct(Order order, string id, int qty)
         {
-            var product = this.GetProduct(id);
+            var product = this._productManager.Get(id);
             order.Items.Add(new OrderItem { Product = product, Quantity = qty });
-        }
-
-        public Product GetProduct(string id)
-        {
-            var ret = this._productManager.Get(new List<string> { id }).FirstOrDefault();
-            if (ret == null)
-            {
-                throw new ProductNotFoundException();
-            }
-
-            return ret;
-        }
-
-        public void ProcessProduct(Product product)
-        {
-            this._productManager.Process(product);
         }
     }
 }
